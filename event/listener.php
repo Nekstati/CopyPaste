@@ -26,6 +26,7 @@ class listener implements EventSubscriberInterface
 	{
 		return array(
             'core.user_setup'                        => 'load_language_on_setup',
+			'core.posting_modify_message_text'		=> 'posting_modify_message_text',
 		);
 	}
 
@@ -38,6 +39,12 @@ class listener implements EventSubscriberInterface
         );
         $event['lang_set_ext'] = $lang_set_ext;
     }
+
+	public function posting_modify_message_text($event)
+	{
+		global $user;
+		$event['message_parser']->message = preg_replace('/' . $user->lang['COPYRIGHT_NAME'] . $user->lang['COLON'] . ' ' . preg_quote(generate_board_url(), '/') . '\S*(\s|$)/', '', $event['message_parser']->message);
+	}
 
 	/** @var \phpbb	emplate	emplate */
 	protected $template;
